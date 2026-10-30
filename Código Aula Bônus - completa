@@ -1,0 +1,854 @@
+from manim import *
+import random
+import numpy as np
+import struct
+
+config.background_color = "#1E1E1E"
+MarkupText.set_default(font = "Manrope")
+Text.set_default(font = "Manrope")
+Circumscribe.set_default(color=WHITE)
+Indicate.set_default(color="#AA77C7")
+
+
+class AulaCompleta(Scene):
+    def construct(self):
+
+        Inicio.construct(self)
+        ComplementoDeDois.construct(self)
+        Duvida.construct(self)
+        BandeiraDeSinal.construct(self)
+        SinalEMagnitude.construct(self)
+        SomaPositivoNegativo.construct(self)
+        SubtracoesNaCPU.construct(self)
+        PesoNegativo.construct(self)
+        Truque.construct(self)
+        SeteMenosCinco.construct(self)
+        CincoMenosCinco.construct(self)
+        GrandeVantagem.construct(self)
+
+
+class Inicio(Scene):
+    def construct(self):
+
+        computador = SVGMobject("assets/Computador.svg")
+        computador.set_color(WHITE)
+        computador.scale(3)
+
+        negativos = Table(
+            [["-1,", "-2,", "-3,"],
+             ["-4,", "-5,", "-6,"],
+             ["-7,", "-8,", "-9..."]],
+             line_config={"stroke_width":0},
+            v_buff=0.3,
+            h_buff=0.3,)
+        negativos.scale(0.7)
+        negativos.move_to([-0.9, 1.3, 0])
+
+        self.play(Write(computador), run_time=1.5)
+        self.play(Create(negativos), run_time=1.3)
+        self.play(FadeOut(computador),
+                  FadeOut(negativos), run_time=0.8)
+        self.wait()
+
+
+class ComplementoDeDois(Scene):
+    def construct(self):
+
+        complemento_de_dois = Text("Complemento de Dois")
+        complemento_de_dois.set_color("#AA77C7")
+        complemento_de_dois.scale(1.7)
+
+        bits = ["0", "1", "0", "1"]
+
+        bits_novos = ["1", "0", "1", "0"]
+
+        caixas = VGroup()
+        for i in range(len(bits)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+        caixas.move_to([0, -0.5, 0])
+
+        seta = Triangle(color=YELLOW, fill_opacity=0.5)
+        seta.scale(0.5)
+        seta.move_to([-3, -1.9, 0])
+
+        texto_novo0 = Text(bits_novos[0]).move_to(caixas[0].get_center())
+        texto_novo0.scale(1.6)
+
+        texto_novo1 = Text(bits_novos[1]).move_to(caixas[1].get_center())
+        texto_novo1.scale(1.6)
+
+        texto_novo2 = Text(bits_novos[2]).move_to(caixas[2].get_center())
+        texto_novo2.scale(1.6)
+
+        texto_novo3 = Text(bits_novos[3]).move_to(caixas[3].get_center())
+        texto_novo3.scale(1.6)
+
+        texto_novo4 = Text('1', color=YELLOW).move_to(caixas[3].get_center())
+        texto_novo4.scale(1.6)
+
+        mais_um = Text('+1', color=YELLOW)
+        mais_um.scale(0.9)
+        mais_um.move_to([3, 0.9, 0])
+
+
+        self.play(Write(complemento_de_dois))
+        self.wait(0.5)
+        self.play(complemento_de_dois.animate.move_to([0, 2.3, 0]).scale(0.9))
+        self.play(FadeIn(caixas))
+        self.wait()
+        self.play(FadeIn(seta),
+                  FadeTransform(caixas[0][1], texto_novo0))
+        self.play(seta.animate.move_to([-1, -1.9, 0]),
+                  FadeTransform(caixas[1][1], texto_novo1))
+        self.play(seta.animate.move_to([1, -1.9, 0]),
+                  FadeTransform(caixas[2][1], texto_novo2)
+        )
+        self.play(seta.animate.move_to([3, -1.9, 0]),
+                  FadeTransform(caixas[3][1], texto_novo3))
+        self.play(FadeOut(seta))
+        self.play(FadeIn(mais_um))
+        self.play(FadeOut(mais_um),
+                  FadeTransform(texto_novo3, texto_novo4))
+        self.wait()
+        self.play(FadeOut(complemento_de_dois),
+                  FadeOut(caixas[0][0]),
+                  FadeOut(caixas[1][0]),
+                  FadeOut(caixas[2][0]),
+                  FadeOut(caixas[3][0]),
+                  FadeOut(texto_novo0),
+                  FadeOut(texto_novo1),
+                  FadeOut(texto_novo2),
+                  FadeOut(texto_novo4))
+        self.wait()
+
+
+class Duvida(Scene):
+    def construct(self):
+
+        duvida = Text('Como representar números negativos?')
+
+        self.play(Write(duvida))
+        self.wait()
+        self.play(FadeOut(duvida))
+        self.wait()
+
+
+class BandeiraDeSinal(Scene):
+    def construct(self):
+
+        bits = ['1', '0', '1','1']
+
+        caixas = VGroup()
+        for i in range(len(bits)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+
+        bit0 = Text('0').move_to(caixas[0].get_center())
+        bit0.scale(1.6)
+
+        positivo = Text('Positivo', color=YELLOW)
+        positivo.move_to([-3, 1.6, 0])
+        positivo.scale(0.9)
+
+        negativo = Text('Negativo', color=YELLOW)
+        negativo.move_to([-3, 1.6, 0])
+        negativo.scale(0.9)
+
+        self.play(FadeIn(caixas))
+        self.play(caixas[0][0].animate.set_fill(color=WHITE, opacity=0.7), run_time=0.25)
+        self.play(caixas[0][0].animate.set_fill(opacity=0), run_time=0.25)
+        self.wait()
+        self.play(FadeTransform(caixas[0][1], bit0),
+                  Write(positivo))
+        self.wait(1.5)
+        self.play(FadeTransform(bit0, caixas[0][1]),
+                  Transform(positivo, negativo))
+        self.wait()
+        self.play(FadeOut(positivo))
+        self.play(FadeOut(caixas))
+        self.wait()
+
+
+class SinalEMagnitude(Scene):
+    def construct(self):
+
+        sinal_e_magnitude = Text('Sinal e Magnitude', color="#AA77C7")
+        sinal_e_magnitude.scale(1.8)
+
+        circuito = SVGMobject("assets/CPU_nova.svg")
+        circuito.set_color(WHITE)
+        circuito.scale(1.8)
+        circuito.move_to([0, -1, 0])
+
+        self.play(Write(sinal_e_magnitude))
+        self.wait()
+        self.play(sinal_e_magnitude.animate.move_to([0, 2, 0]))
+        self.play(FadeIn(circuito))
+        self.wait()
+        self.play(FadeOut(sinal_e_magnitude),
+                  FadeOut(circuito))
+        self.wait()
+
+
+class SomaPositivoNegativo(Scene):
+    def construct(self):
+
+        bits1 = ['0', '1', '0', '1']
+
+        caixas1 = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas1.add(dupla)
+        caixas1.arrange(RIGHT, buff=0)
+
+        bits2 = ['1', '1', '0', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.move_to([0, 0, 0])
+        caixas2.scale(0.65)
+
+        sinal_de_mais = Text('+', color=YELLOW)
+        sinal_de_mais.move_to([-3, 0, 0])
+
+        linha = Line(start=[-2.8, -1, 0], end=[2.8, -1, 0], color=YELLOW)
+
+        bits3 = ['1', '0', '0', '1', '0']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+        caixas3.move_to([-0.6, -2, 0])
+        caixas3.scale(0.65)
+
+        bits4 = ['0', '0', '1', '0']
+
+        caixas4 = VGroup()
+        for i in range(len(bits4)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits4[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas4.add(dupla)
+        caixas4.arrange(RIGHT, buff=0)
+        caixas4.move_to([0, -2, 0])
+        caixas4.scale(0.65)
+
+        mais_um = Text('+1', color=YELLOW)
+        mais_um.scale(0.5)
+        mais_um.move_to([0.6, 2.9, 0])
+
+        self.play(FadeIn(caixas1))
+        self.wait()
+        self.play(caixas1.animate.move_to([0, 1.9, 0]).scale(0.65))
+        self.play(FadeIn(caixas2),
+                  Write(sinal_de_mais),
+                  Write(linha))
+        self.wait()
+        self.play(FadeIn(mais_um))
+        self.play(FadeOut(mais_um))
+        mais_um.move_to([-2, 2.9, 0])
+        self.play(FadeIn(mais_um))
+        self.play(FadeOut(mais_um))
+        self.play(FadeIn(caixas3))
+        self.play(caixas3.animate.rotate(0.1), run_time=0.1, rate_func=there_and_back)
+        self.play(caixas3.animate.rotate(0.1), run_time=0.1, rate_func=there_and_back)
+        self.play(FadeTransform(caixas3, caixas4), run_time=0.15)
+        self.wait()
+        self.remove(caixas3)
+        self.play(FadeOut(caixas1),
+                  FadeOut(caixas2),
+                  FadeOut(sinal_de_mais),
+                  FadeOut(linha),
+                  FadeOut(caixas4))
+        self.wait()
+
+
+class SubtracoesNaCPU (Scene):
+    def construct(self):
+
+        bits1 = ['0', '1', '0', '1']
+
+        caixas1 = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas1.add(dupla)
+        caixas1.arrange(RIGHT, buff=0)
+        caixas1.move_to([-2, 3, 0])
+        caixas1.scale(0.4)
+
+        contorno1 = SurroundingRectangle(caixas1, color=YELLOW, buff=0, stroke_width=6)
+
+        bits2 = ['0', '0', '1', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.move_to([-2, 2, 0])
+        caixas2.scale(0.4)
+
+        contorno2 = SurroundingRectangle(caixas2, color=YELLOW, buff=0, stroke_width=6)
+
+        grupo1 = VGroup(caixas1, caixas2)
+        chaves1 = Brace(grupo1, direction=RIGHT, color=YELLOW)
+
+        texto_chaves1 = Text('Subtrair')
+        texto_chaves1.next_to(chaves1, RIGHT)
+
+        bits3 = ['0', '1', '0', '0']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+        caixas3.move_to([-2, 0.5, 0])
+        caixas3.scale(0.4)
+
+        contorno3 = SurroundingRectangle(caixas3, color=YELLOW, buff=0, stroke_width=6)
+
+        bits4 = ['1', '0', '1', '0']
+
+        caixas4 = VGroup()
+        for i in range(len(bits4)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits4[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas4.add(dupla)
+        caixas4.arrange(RIGHT, buff=0)
+        caixas4.move_to([-2, -0.5, 0])
+        caixas4.scale(0.4)
+
+        contorno4 = SurroundingRectangle(caixas4, color=YELLOW, buff=0, stroke_width=6)
+
+        grupo2 = VGroup(caixas3, caixas4)
+        chaves2 = Brace(grupo2, direction=RIGHT, color=YELLOW)
+
+        texto_chaves2 = Text('Somar')
+        texto_chaves2.next_to(chaves2, RIGHT)
+
+        bits5 = ['0', '0', '1', '0']
+
+        caixas5 = VGroup()
+        for i in range(len(bits5)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits5[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas5.add(dupla)
+        caixas5.arrange(RIGHT, buff=0)
+        caixas5.move_to([-2, -2, 0])
+        caixas5.scale(0.4)
+
+        contorno5 = SurroundingRectangle(caixas5, color=YELLOW, buff=0, stroke_width=6)
+
+        bits6 = ['0', '1', '0', '1']
+
+        caixas6 = VGroup()
+        for i in range(len(bits6)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits6[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas6.add(dupla)
+        caixas6.arrange(RIGHT, buff=0)
+        caixas6.move_to([-2, -3, 0])
+        caixas6.scale(0.4)
+
+        contorno6 = SurroundingRectangle(caixas6, color=YELLOW, buff=0, stroke_width=6)
+
+        grupo3 = VGroup(caixas5, caixas6)
+        chaves3 = Brace(grupo3, direction=RIGHT, color=YELLOW)
+
+        texto_chaves3 = Text('Subtrair')
+        texto_chaves3.next_to(chaves3, RIGHT)
+
+        self.play(Write(caixas1),
+                  Write(caixas2))
+        self.play(Write(caixas3),
+                  Write(caixas4))
+        self.play(Write(caixas5),
+                  Write(caixas6))
+        self.play(ShowPassingFlash(contorno1),
+                  ShowPassingFlash(contorno2), run_time=0.85)
+        self.play(ShowPassingFlash(contorno3),
+            ShowPassingFlash(contorno4), run_time=0.85)
+        self.play(ShowPassingFlash(contorno5),
+            ShowPassingFlash(contorno6), run_time=0.85)
+        self.wait()
+        self.play(Write(chaves1),
+                  Write(texto_chaves1))
+        self.play(Write(chaves2),
+                  Write(texto_chaves2))
+        self.play(Write(chaves3),
+                  Write(texto_chaves3))
+        self.wait()
+        self.play(FadeOut(caixas1),
+                  FadeOut(caixas2),
+                  FadeOut(caixas3),
+                  FadeOut(caixas4),
+                  FadeOut(caixas5),
+                  FadeOut(caixas6),
+                  FadeOut(chaves1),
+                  FadeOut(chaves2),
+                  FadeOut(chaves3),
+                  FadeOut(texto_chaves1),
+                  FadeOut(texto_chaves2),
+                  FadeOut(texto_chaves3))
+        self.wait()
+
+
+class PesoNegativo(Scene):
+    def construct(self):
+        bits1 = ['0', '1', '0', '1']
+
+        caixas = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+
+        oito = Text('8')
+        oito.scale(1.2)
+        oito.move_to([-3.6, -1, 0])
+
+        quatro = Text('4')
+        quatro.scale(1.2)
+        quatro.move_to([-1.2, -1, 0])
+
+        dois = Text('2')
+        dois.scale(1.2)
+        dois.move_to([1.2, -1, 0])
+
+        um = Text('1')
+        um.scale(1.2)
+        um.move_to([3.7, -1, 0])
+
+        menos_oito = Text('-8', color="#AA77C7")
+        menos_oito.scale(1.2)
+        menos_oito.move_to([-3.6, -1, 0])
+
+        oito_novo = Text('8')
+        oito_novo.scale(1.2)
+        oito_novo.move_to([-3.6, -1, 0])
+
+        multiplicacao = VGroup()
+        for i in range(len(bits1)):
+            vezes = Text('X')
+            vezes.scale(0.4)
+            multiplicacao.add(vezes)
+        multiplicacao.arrange(RIGHT, buff=2.3)
+        multiplicacao.move_to([0, -0.8, 0])
+
+        numeros_soma = ['0', '4', '0', '1']
+
+        conta = VGroup()
+        for i in range(len(bits1)):
+            soma = Text(numeros_soma[i])
+            soma.scale(1.2)
+            conta.add(soma)
+        conta.arrange(RIGHT, buff=2.1)
+        conta.move_to([0, -2, 0])
+
+        mais_e_igual = ['+', '+', '+', '=']
+
+        sinais = VGroup()
+        for i in range(4):
+            sinais_conta = Text(mais_e_igual[i])
+            sinais_conta.scale(0.8)
+            sinais.add(sinais_conta)
+        sinais.arrange(RIGHT, buff=2.2)
+        sinais.move_to([1.2, -2, 0])
+
+        cinco = Text('5')
+        cinco.scale(1.2)
+        cinco.move_to([4.5, -2, 0])
+
+        bits_novos = ['1', '0', '1', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits_novos)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits_novos[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.scale(1.2)
+        caixas2.move_to([0, 1.9, 0])
+
+        menos_oito_novo = Text('-8', color="#AA77C7")
+        menos_oito_novo.scale(1.2)
+        menos_oito_novo.move_to([-3.8, -0.4, 0])
+
+        menos_cinco = Text('-5', color="#AA77C7")
+        menos_cinco.scale(1.2)
+        menos_cinco.move_to([4.5, -2, 0])
+
+        menos_oito_novo2 = Text('-8', color="#AA77C7")
+        menos_oito_novo2.scale(1.2)
+        menos_oito_novo2.move_to([-5, -2, 0])
+
+        zero = Text('0', color="#AA77C7")
+        zero.scale(1.2)
+        zero.move_to([-2.7, -2, 0])
+
+        dois_novo = Text('2', color="#AA77C7")
+        dois_novo.scale(1.2)
+        dois_novo.move_to([-0.1, -2, 0])
+
+        self.play(Write(caixas))
+        self.wait(0.4)
+        self.play(caixas.animate.scale(1.5).move_to([4, 0, 0]))
+        self.wait(0.3)
+        self.play(caixas.animate.scale(0.8).move_to(ORIGIN))
+        bit_roxo = Text('0', color="#AA77C7").move_to(caixas[0].get_center())
+        bit_roxo.scale(1.9)
+        self.play(FadeTransform(caixas[0][1], bit_roxo), run_time=0.8)
+        self.play(FadeTransform(bit_roxo, caixas[0][1]), run_time=0.8)
+        self.wait(0.5)
+        self.play(caixas.animate.move_to([0, 0.8, 0]))
+        self.play(LaggedStart(
+            Write(oito),
+            Write(quatro),
+            Write(dois),
+            Write(um), lag_ratio=0.9))
+        self.wait(0.5)
+        self.play(LaggedStart(Unwrite(oito),
+                  Write(menos_oito), lag_ratio=0.9), run_time=0.9)
+        self.wait(0.5)
+        self.play(LaggedStart(Unwrite(menos_oito),
+                              Write(oito_novo), lag_ratio=0.9), run_time=0.9)
+        numeros = VGroup(oito,menos_oito, oito_novo, quatro, dois, um)
+        self.play(numeros.animate.move_to([0, -1.5, 0]))
+        self.play(FadeIn(multiplicacao))
+        conjunto = VGroup(caixas, numeros, multiplicacao)
+        self.play(conjunto.animate.move_to([0, 1.2, 0]))
+        chaves = Brace(conjunto, DOWN, color=YELLOW)
+        self.play(Write(chaves))
+        self.play(Write(conta))
+        conjunto_conta = VGroup(conta, sinais)
+        self.play(FadeIn(sinais),
+                        conjunto_conta.animate.move_to([-0.8, -2, 0]))
+        self.play(Write(cinco))
+        self.wait()
+        self.play(FadeTransform(caixas, caixas2))
+        self.play(FadeTransform(oito_novo, menos_oito_novo))
+        self.play(FadeTransform(conta[0], menos_oito_novo2),
+                  FadeTransform(conta[1], zero),
+                  FadeTransform(conta[2], dois_novo))
+        self.play(FadeTransform(cinco, menos_cinco))
+        self.wait()
+        self.play(FadeOut(mob) for mob in self.mobjects)
+        self.wait()
+
+
+class Truque(Scene):
+    def construct(self):
+
+        bits1 = ['0', '1', '0', '1']
+
+        caixas = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+
+        bits2 = ['1', '0', '1', '0']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+
+        mais_um = Text('+1', color=YELLOW)
+        mais_um.scale(0.8)
+        mais_um.move_to([2.9, 1.5, 0])
+
+        bits3 = ['1', '0', '1', '1']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+
+        self.play(FadeIn(caixas))
+        self.wait()
+        self.play(FadeTransform(caixas, caixas2), run_time=1.2)
+        self.wait()
+        self.play(Write(mais_um))
+        self.wait(0.5)
+        self.play(FadeOut(mais_um),
+                  FadeTransform(caixas2, caixas3), run_time=1.2)
+        self.wait()
+        self.play(FadeOut(mob) for mob in self.mobjects)
+        self.wait()
+
+
+class SeteMenosCinco(Scene):
+    def construct(self):
+
+        conta = Text('7 - (-5) = 7 + 5')
+        conta.scale(2.2)
+
+        bits1 = ['0', '1', '1', '1']
+
+        caixas1 = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas1.add(dupla)
+        caixas1.arrange(RIGHT, buff=0)
+        caixas1.scale(0.8)
+        caixas1.move_to([0, 2.5, 0])
+
+        bits2 = ['1', '0', '1', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.scale(0.8)
+        caixas2.move_to([0, 0.5, 0])
+
+        sinal_de_mais = Text('+', color=YELLOW)
+        sinal_de_mais.move_to([-3.7, 0.4, 0])
+
+        linha = Line(start=[-3.5, -0.6, 0], end=[3.5, -0.6, 0], color=YELLOW)
+
+        um_cima = Text('1', color="#AA77C7").move_to(caixas1[3].get_center())
+        um_cima.scale(1.2)
+
+        um_baixo = Text('1', color="#AA77C7").move_to(caixas2[3].get_center())
+        um_baixo.scale(1.2)
+
+        zero = Text('0')
+        zero.scale(1.3)
+        zero.move_to([2.38, -1.7, 0])
+
+        bits3 = ['0', '0', '1', '0']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+        caixas3.scale(0.8)
+        caixas3.move_to([0, -1.4, 0])
+
+        bit_solto = Text('1')
+        bit_solto.scale(1.3)
+        bit_solto.move_to([-4, -1.4, 0])
+
+        caixa3_conjunto = VGroup(caixas3, bit_solto)
+        caixa3_conjunto.move_to([-0.5, -1.7, 0])
+
+        contorno = SurroundingRectangle(caixas3, color=YELLOW, buff=0, stroke_width=6)
+
+        tudo = VGroup(
+            caixas1, caixas2, sinal_de_mais, linha,
+            um_cima, um_baixo, zero, caixa3_conjunto, contorno
+        )
+        tudo.move_to(DOWN * 0.1)
+
+
+        self.play(Write(conta), run_time=1.2)
+        self.wait(1.5)
+        self.play(FadeOut(conta))
+        self.wait()
+        self.play(FadeIn(caixas1))
+        self.wait(0.3)
+        self.play(FadeIn(caixas2))
+        self.wait(0.6)
+        self.play(Write(linha),
+                  Write(sinal_de_mais))
+        self.play(FadeTransform(caixas1[3][1], um_cima), run_time=0.7)
+        self.play(FadeTransform(um_cima, caixas1[3][1]), run_time=0.7)
+        self.play(FadeTransform(caixas2[3][1], um_baixo), run_time=0.7)
+        self.play(FadeTransform(um_baixo, caixas2[3][1]), run_time=0.7)
+        self.play(FadeIn(zero))
+        self.wait(0.5)
+        self.play(FadeOut(zero),
+                  FadeIn(caixa3_conjunto))
+        self.wait()
+        self.play(FadeOut(bit_solto))
+        self.wait(0.5)
+        self.play(ShowPassingFlash(contorno))
+        self.wait()
+        self.play(FadeOut(mob) for mob in self.mobjects)
+        self.wait()
+
+
+class CincoMenosCinco(Scene):
+    def construct(self):
+
+        bits1 = ['0', '1', '0', '1']
+
+        caixas1 = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas1.add(dupla)
+        caixas1.arrange(RIGHT, buff=0)
+        caixas1.scale(0.8)
+        caixas1.move_to([0, 2, 0])
+
+        bits2 = ['1', '0', '1', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.scale(0.8)
+        caixas2.move_to([0, 0, 0])
+
+        sinal_de_mais = Text('+', color=YELLOW)
+        sinal_de_mais.move_to([-3.7, 0, 0])
+
+        linha = Line(start=[-3.5, -1, 0], end=[3.5, -1, 0], color=YELLOW)
+
+        bits3 = ['0', '0', '0', '0']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+        caixas3.scale(0.8)
+        caixas3.move_to([0, -2, 0])
+
+        bit_solto = Text('1')
+        bit_solto.scale(1.3)
+        bit_solto.move_to([-4, -2, 0])
+
+        self.play(FadeIn(caixas1))
+        self.play(FadeIn(caixas2),
+                  Write(sinal_de_mais),
+                  Write(linha))
+        self.play(FadeIn(caixas3),
+                  FadeIn(bit_solto))
+        self.wait()
+        self.play(FadeOut(bit_solto))
+        self.wait()
+        self.play(FadeOut(mob) for mob in self.mobjects)
+        self.wait()
+
+
+class GrandeVantagem(Scene):
+    def construct(self):
+
+        subtracao = Text('Subtração')
+        subtracao.scale(1.2)
+        subtracao.move_to([-3.7, 0, 0])
+
+        adicao = Text('Adição comum')
+        adicao.scale(1.2)
+        adicao.move_to([3, 0, 0])
+
+        seta = Arrow(start=[-2, 0, 0], end=[0.6, 0, 0], color=YELLOW)
+
+        circuito = Text('Circuito pequeno e veloz', color="#AA77C7")
+        circuito.scale(1.5)
+
+        self.play(Write(subtracao))
+        self.play(Create(seta))
+        self.play(Write(adicao))
+        self.wait()
+        self.play(FadeOut(subtracao),
+                  FadeOut(adicao),
+                  FadeOut(seta))
+        self.wait()
+        self.play(Write(circuito))
+        self.wait(1.2)
+        self.play(FadeOut(circuito))
+        self.wait()
